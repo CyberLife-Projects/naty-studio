@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Fortalesia Script';
+  src: url('./fontes/FortalesiaScript_PERSONAL_USE_ONLY.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fortalesia Plain';
+  src: url('./fontes/FortalesiaPlain_PERSONAL_USE_ONLY.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --primary-purple: #fde383;
+  --secondary-purple: #fde383;
+  --light-purple: #fffbf0;
+  --dark-purple: #e6cc6f;
+  --accent-pink: #fde383;
+  --light-pink: #fffef5;
+  --peach: #fef5d4;
+  --light-peach: #fffef9;
+  --text-dark: #2C2416;
+  --text-light: #6B5D3F;
+  --white: #FFFFFF;
+  --bg-light: #FFFEF9;
+  --shadow: rgba(253, 227, 131, 0.25);
+  --light-gold: #fef5d4;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  min-height: 100vh;
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+h1, h2, h3 {
+  font-family: 'Fortalesia Script', 'Cormorant Garamond', serif;
+  font-weight: normal;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Scrollbar customizada suavizada */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(253, 227, 131, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--dark-purple) 0%, var(--primary-purple) 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
