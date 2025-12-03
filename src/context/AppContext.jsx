@@ -17,6 +17,11 @@ export const AppProvider = ({ children }) => {
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isPaginaBloqueada, setIsPaginaBloqueada] = useState(() => {
+    // Carregar estado do localStorage
+    const saved = localStorage.getItem('paginaBloqueada')
+    return saved === 'true'
+  })
 
   // Horários disponíveis (9h às 18h)
   const timeSlots = [
@@ -413,6 +418,17 @@ export const AppProvider = ({ children }) => {
     return appointments.filter(apt => apt.date === date && apt.status !== 'cancelado')
   }
 
+  // Funções de bloqueio
+  const bloquearPagina = () => {
+    setIsPaginaBloqueada(true)
+    localStorage.setItem('paginaBloqueada', 'true')
+  }
+
+  const desbloquearPagina = () => {
+    setIsPaginaBloqueada(false)
+    localStorage.setItem('paginaBloqueada', 'false')
+  }
+
   const value = {
     appointments,
     services,
@@ -428,7 +444,10 @@ export const AppProvider = ({ children }) => {
     completeAppointment,
     getAppointmentsByDate,
     fetchAppointments, // Expor para recarregar quando necessário
-    fetchServices
+    fetchServices,
+    isPaginaBloqueada,
+    bloquearPagina,
+    desbloquearPagina
   }
 
   return (

@@ -1,0 +1,164 @@
+.bloqueador-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.bloqueador-login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.bloqueador-login-box h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 600;
+}
+
+.token-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.token-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+}
+
+.bloqueador-painel {
+  background: white;
+  padding: 50px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+}
+
+.bloqueador-painel h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 40px;
+  font-size: 28px;
+}
+
+.status-box {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.status-box h2 {
+  color: #555;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.status {
+  font-size: 32px;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.status.bloqueada {
+  background: #fee;
+  color: #c00;
+}
+
+.status.desbloqueada {
+  background: #efe;
+  color: #0a0;
+}
+
+.botoes-controle {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btn-bloquear,
+.btn-desbloquear {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-bloquear {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-bloquear:hover:not(:disabled) {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+.btn-desbloquear {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-desbloquear:hover:not(:disabled) {
+  background: #229954;
+  transform: translateY(-2px);
+}
+
+.btn-bloquear:disabled,
+.btn-desbloquear:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
