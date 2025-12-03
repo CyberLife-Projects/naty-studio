@@ -5,22 +5,6 @@
 -- Execute este SQL no SQL Editor do seu projeto Supabase
 
 -- =============================================
--- TABELA: user_admin
--- =============================================
--- Tabela separada para administradores com autenticação própria
-CREATE TABLE IF NOT EXISTS public.user_admin (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  full_name TEXT NOT NULL,
-  cpf TEXT UNIQUE NOT NULL,
-  phone TEXT,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
-);
-
--- =============================================
 -- TABELA: profiles
 -- =============================================
 -- Estende a tabela auth.users do Supabase
@@ -29,34 +13,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   email TEXT UNIQUE NOT NULL,
   full_name TEXT,
   phone TEXT,
-  cpf_cnpj TEXT,
   role TEXT DEFAULT 'client' CHECK (role IN ('admin', 'client')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
-
--- =============================================
--- TABELA: subscriptions
--- =============================================
--- Assinaturas dos profissionais (sistema terceirizado)
-CREATE TABLE IF NOT EXISTS public.subscriptions (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  asaas_customer_id TEXT,
-  asaas_subscription_id TEXT,
-  status TEXT DEFAULT 'inactive' CHECK (status IN ('active', 'inactive', 'suspended', 'cancelled')),
-  plan_value DECIMAL(10,2) DEFAULT 34.90,
-  next_due_date DATE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
-);
-
--- =============================================
--- ÍNDICES para subscriptions
--- =============================================
-CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON public.subscriptions(user_id);
-CREATE INDEX IF NOT EXISTS idx_subscriptions_asaas_customer ON public.subscriptions(asaas_customer_id);
-CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON public.subscriptions(status);
 
 -- =============================================
 -- TABELA: services
@@ -101,8 +61,6 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 -- =============================================
 -- ÍNDICES PARA PERFORMANCE
 -- =============================================
-CREATE INDEX IF NOT EXISTS idx_user_admin_email ON public.user_admin(email);
-CREATE INDEX IF NOT EXISTS idx_user_admin_cpf ON public.user_admin(cpf);
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON public.appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_status ON public.appointments(status);
 CREATE INDEX IF NOT EXISTS idx_appointments_client_phone ON public.appointments(client_phone);
@@ -115,41 +73,9 @@ CREATE INDEX IF NOT EXISTS idx_services_category ON public.services(category);
 -- ROW LEVEL SECURITY (RLS)
 -- =============================================
 -- Habilitar RLS nas tabelas
-ALTER TABLE public.user_admin ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
-
--- Remover políticas antigas se existirem
-DROP POLICY IF EXISTS "Admins podem ler user_admin" ON public.user_admin;
-DROP POLICY IF EXISTS "Admins podem inserir user_admin" ON public.user_admin;
-DROP POLICY IF EXISTS "Admins podem atualizar user_admin" ON public.user_admin;
-DROP POLICY IF EXISTS "Profiles são públicos para leitura" ON public.profiles;
-DROP POLICY IF EXISTS "Usuários podem atualizar seu próprio perfil" ON public.profiles;
-DROP POLICY IF EXISTS "Usuários podem ver sua própria assinatura" ON public.subscriptions;
-DROP POLICY IF EXISTS "Usuários podem inserir sua própria assinatura" ON public.subscriptions;
-DROP POLICY IF EXISTS "Usuários podem atualizar sua própria assinatura" ON public.subscriptions;
-DROP POLICY IF EXISTS "Admins podem ver todas as assinaturas" ON public.subscriptions;
-DROP POLICY IF EXISTS "Serviços ativos são públicos para leitura" ON public.services;
-DROP POLICY IF EXISTS "Apenas admins podem modificar serviços" ON public.services;
-DROP POLICY IF EXISTS "Clientes podem criar agendamentos" ON public.appointments;
-DROP POLICY IF EXISTS "Todos podem ver agendamentos (para verificar horários)" ON public.appointments;
-DROP POLICY IF EXISTS "Admins podem atualizar qualquer agendamento" ON public.appointments;
-DROP POLICY IF EXISTS "Admins podem deletar agendamentos" ON public.appointments;
-
--- Políticas para USER_ADMIN
-CREATE POLICY "Admins podem ler user_admin" 
-  ON public.user_admin FOR SELECT 
-  USING (true);
-
-CREATE POLICY "Admins podem inserir user_admin" 
-  ON public.user_admin FOR INSERT 
-  WITH CHECK (true);
-
-CREATE POLICY "Admins podem atualizar user_admin" 
-  ON public.user_admin FOR UPDATE 
-  USING (true);
 
 -- Políticas para PROFILES
 CREATE POLICY "Profiles são públicos para leitura" 
@@ -159,28 +85,6 @@ CREATE POLICY "Profiles são públicos para leitura"
 CREATE POLICY "Usuários podem atualizar seu próprio perfil" 
   ON public.profiles FOR UPDATE 
   USING (auth.uid() = id);
-
--- Políticas para SUBSCRIPTIONS
-CREATE POLICY "Usuários podem ver sua própria assinatura" 
-  ON public.subscriptions FOR SELECT 
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuários podem inserir sua própria assinatura" 
-  ON public.subscriptions FOR INSERT 
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuários podem atualizar sua própria assinatura" 
-  ON public.subscriptions FOR UPDATE 
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Admins podem ver todas as assinaturas" 
-  ON public.subscriptions FOR SELECT 
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles 
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
 
 -- Políticas para SERVICES
 CREATE POLICY "Serviços ativos são públicos para leitura" 
@@ -237,15 +141,6 @@ $$ LANGUAGE plpgsql;
 -- =============================================
 -- TRIGGERS: updated_at
 -- =============================================
-DROP TRIGGER IF EXISTS update_user_admin_updated_at ON public.user_admin;
-DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
-DROP TRIGGER IF EXISTS update_services_updated_at ON public.services;
-DROP TRIGGER IF EXISTS update_appointments_updated_at ON public.appointments;
-DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON public.subscriptions;
-
-CREATE TRIGGER update_user_admin_updated_at BEFORE UPDATE ON public.user_admin
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -253,9 +148,6 @@ CREATE TRIGGER update_services_updated_at BEFORE UPDATE ON public.services
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON public.appointments
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON public.subscriptions
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- =============================================
@@ -277,20 +169,9 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger para executar a função
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
--- =============================================
--- DADOS INICIAIS: Admin User
--- =============================================
--- Inserir admin Nathasha Silva
--- Senha: A senha será o CPF sem pontuação (48880813870)
--- IMPORTANTE: Em produção, use bcrypt ou argon2 para hash de senha
-INSERT INTO public.user_admin (email, password_hash, full_name, cpf, phone, is_active) VALUES
-  ('nathashasilva02@icloud.com', '48880813870', 'Nathasha Silva', '488.808.138-70', '17981717922', true)
-ON CONFLICT (email) DO NOTHING;
 
 -- =============================================
 -- DADOS INICIAIS: Serviços

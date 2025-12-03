@@ -9,7 +9,6 @@
   src: url('./fontes/FortalesiaScript_PERSONAL_USE_ONLY.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
 }
 
 @font-face {
@@ -17,7 +16,6 @@
   src: url('./fontes/FortalesiaPlain_PERSONAL_USE_ONLY.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
 }
 
 :root {
