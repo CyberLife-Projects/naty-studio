@@ -6,16 +6,18 @@
 
 @font-face {
   font-family: 'Fortalesia Script';
-  src: url('./fontes/FortalesiaScript_PERSONAL_USE_ONLY.otf') format('opentype');
+  src: url('/src/fontes/FortalesiaScript_PERSONAL_USE_ONLY.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'Fortalesia Plain';
-  src: url('./fontes/FortalesiaPlain_PERSONAL_USE_ONLY.otf') format('opentype');
+  src: url('/src/fontes/FortalesiaPlain_PERSONAL_USE_ONLY.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 :root {
