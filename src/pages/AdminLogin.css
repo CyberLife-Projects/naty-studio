@@ -281,6 +281,8 @@
 
 .password-input-wrapper input {
   flex: 1;
+}
+
 .form-group input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -289,7 +291,6 @@
 /* Efeito de digitação com brilho dourado */
 .form-group input:focus + label {
   color: var(--primary-gold);
-}0px;
 }
 
 .toggle-password {
@@ -368,12 +369,18 @@
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
 .btn-back-home:hover:not(:disabled) {
   background: white;
   border-color: var(--primary-gold);
   color: #333;
   box-shadow: 0 4px 12px rgba(253, 227, 131, 0.2);
 }
+
 .btn-back-home:disabled {
   opacity: 0.5;
   cursor: not-allowed;
