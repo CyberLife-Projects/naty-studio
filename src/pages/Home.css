@@ -310,7 +310,6 @@
   max-width: 320px;
   height: auto;
   filter: drop-shadow(0 8px 24px var(--shadow));
-  animation: float 3s ease-in-out infinite;
   transition: transform 0.3s ease;
 }
 
@@ -338,7 +337,6 @@
 
 .logo-icon {
   color: var(--dark-purple);
-  animation: sparkle 2s infinite;
 }
 
 .logo h1 {
