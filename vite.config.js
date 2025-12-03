@@ -1,13 +1,21 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: './',
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
+    cssCodeSplit: true,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: undefined,
@@ -31,6 +39,7 @@ export default defineConfig({
     open: true
   },
   css: {
-    devSourcemap: false
+    devSourcemap: false,
+    preprocessorOptions: {}
   }
 })
