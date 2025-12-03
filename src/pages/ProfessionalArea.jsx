@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Crown, Calendar, BarChart3, Eye, Clock, Phone, Mail, ArrowLeft, Users, ChevronLeft, ChevronRight, Search, Plus, X, LogOut, TrendingUp, BarChart2 } from 'lucide-react'
+import { Crown, Calendar, BarChart3, Eye, Clock, Phone, Mail, ArrowLeft, Users, ChevronLeft, ChevronRight, Search, Plus, X, LogOut, TrendingUp, BarChart2, CreditCard, Loader, DollarSign } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { asaasClient, PAYMENT_STATUS, BILLING_TYPES } from '../lib/asaasClient'
+import { supabase } from '../lib/supabaseClient'
 import './ProfessionalArea.css'
 
 const ProfessionalArea = () => {
   const navigate = useNavigate()
   const { appointments, services, cancelAppointment, completeAppointment, addAppointment, deleteAppointment, updateAppointment } = useApp()
   
+  // Dados hardcoded da Nathasha (como se já estivesse logada)
+  const adminData = {
+    id: '00000000-0000-0000-0000-000000000001',
+    email: 'nathashasilva02@icloud.com',
+    full_name: 'Nathasha Silva',
+    cpf: '488.808.138-70',
+    phone: '17981717922'
+  }
+
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [viewMode, setViewMode] = useState('agenda') // 'agenda', 'stats', 'clients' ou 'services'
-  const [password, setPassword] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(true) // Sempre autenticado
   const [searchQuery, setSearchQuery] = useState('')
   const [showAddServiceModal, setShowAddServiceModal] = useState(false)
   const [showEditServiceModal, setShowEditServiceModal] = useState(false)
@@ -56,6 +66,14 @@ const ProfessionalArea = () => {
     date: '',
     time: ''
   })
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
+  const [subscriptionData, setSubscriptionData] = useState({
+    loading: true,
+    subscription: null,
+    pendingInvoices: [],
+    recentPayments: [],
+    asaasCustomerId: null
+  })
   const [newAppointment, setNewAppointment] = useState({
     clientName: '',
     clientPhone: '',
@@ -68,19 +86,147 @@ const ProfessionalArea = () => {
     recurringMonths: 3 // quantos meses
   })
 
-  const handleLogin = (e) => {
+  // Verificar autenticação ao carregar
+  useEffect(() => {
+    const checkAuth = () => {
+      const adminAuth = localStorage.getItem('adminAuth')
+      if (!adminAuth) {
+        navigate('/admin')
+      }
+    }
+    checkAuth()
+  }, [navigate])
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth')
+    navigate('/admin')
+  }
+
+  const handleNavigateToSubscription = async (e) => {
     e.preventDefault()
-    if (password === 'naty123') {
-      setIsAuthenticated(true)
-    } else {
-      showCustomNotification('error', 'Senha incorreta!', 'Por favor, tente novamente.')
+    e.stopPropagation()
+    setShowSubscriptionModal(true)
+    await loadSubscriptionData()
+  }
+
+  const loadSubscriptionData = async () => {
+    try {
+      setSubscriptionData(prev => ({ ...prev, loading: true }))
+
+      // Usar dados hardcoded da Nathasha
+      const profile = {
+        full_name: adminData.full_name,
+        email: adminData.email,
+        phone: adminData.phone,
+        cpf_cnpj: adminData.cpf
+      }
+
+      // Buscar assinatura no banco local pelo CPF
+      let { data: localSubscription } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', adminData.id)
+        .single()
+
+      let customerId = localSubscription?.asaas_customer_id
+
+      // Se não existe customer_id, criar cliente no Asaas
+      if (!customerId) {
+        const customerResult = await asaasClient.createOrGetCustomer({
+          name: profile.full_name,
+          email: profile.email,
+          phone: profile.phone,
+          cpfCnpj: profile.cpf_cnpj
+        })
+
+        if (customerResult.success) {
+          customerId = customerResult.data.id
+          
+          // Salvar no banco local
+          if (localSubscription) {
+            await supabase
+              .from('subscriptions')
+              .update({ asaas_customer_id: customerId })
+              .eq('user_id', adminData.id)
+          } else {
+            await supabase
+              .from('subscriptions')
+              .insert({
+                user_id: adminData.id,
+                asaas_customer_id: customerId,
+                status: 'inactive'
+              })
+          }
+        }
+      }
+
+      if (!customerId) {
+        setSubscriptionData({
+          loading: false,
+          subscription: null,
+          pendingInvoices: [],
+          recentPayments: [],
+          asaasCustomerId: null
+        })
+        return
+      }
+
+      // Buscar assinatura ativa no Asaas
+      let subscription = null
+      const subsResult = await asaasClient.getCustomerSubscriptions(customerId)
+      if (subsResult.success && subsResult.data.data?.length > 0) {
+        subscription = subsResult.data.data.find(s => s.status === 'ACTIVE') || subsResult.data.data[0]
+      }
+
+      // Buscar faturas pendentes e vencidas
+      const pendingResult = await asaasClient.getPendingPayments(customerId)
+      const overdueResult = await asaasClient.getOverduePayments(customerId)
+      
+      const allPending = []
+      if (pendingResult.success && pendingResult.data.data) {
+        allPending.push(...pendingResult.data.data)
+      }
+      if (overdueResult.success && overdueResult.data.data) {
+        allPending.push(...overdueResult.data.data)
+      }
+
+      // Buscar últimos pagamentos (limite 3)
+      const historyResult = await asaasClient.getPaymentHistory(customerId)
+      const recentPayments = historyResult.success 
+        ? historyResult.payments.filter(p => ['RECEIVED', 'CONFIRMED'].includes(p.status)).slice(0, 3)
+        : []
+
+      setSubscriptionData({
+        loading: false,
+        subscription,
+        pendingInvoices: allPending,
+        recentPayments,
+        asaasCustomerId: customerId
+      })
+
+    } catch (error) {
+      console.error('Erro ao carregar dados da assinatura:', error)
+      showCustomNotification('error', 'Erro ao carregar dados', 'Tente novamente.')
+      setSubscriptionData({
+        loading: false,
+        subscription: null,
+        pendingInvoices: [],
+        recentPayments: [],
+        asaasCustomerId: null
+      })
     }
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    setPassword('')
-    navigate('/')
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value)
+  }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '-'
+    return new Date(dateString + 'T00:00:00').toLocaleDateString('pt-BR')
   }
 
   const toggleDateExpansion = (dateKey) => {
@@ -733,44 +879,6 @@ const ProfessionalArea = () => {
     client.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  // Tela de login
-  if (!isAuthenticated) {
-    return (
-      <div className="login-container">
-        <button
-          className="back-arrow-btn"
-          onClick={() => navigate('/')}
-          aria-label="Voltar"
-        >
-          <ArrowLeft size={24} />
-        </button>
-        <div className="login-box">
-          <div className="login-header">
-            <div className="login-logo">Naty Studio</div>
-            <h1><Crown size={32} style={{display: 'inline-block', verticalAlign: 'middle', marginRight: '10px'}} />Área Profissional</h1>
-            <p>Acesso restrito</p>
-          </div>
-          <form onSubmit={handleLogin} className="login-form">
-            <div className="form-group">
-              <label>Senha de Acesso</label>
-              <input 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Digite a senha"
-                required
-                autoFocus
-              />
-            </div>
-            <button type="submit" className="login-button">
-              Entrar
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="professional-area">
       {/* Notificação Personalizada */}
@@ -792,21 +900,19 @@ const ProfessionalArea = () => {
 
       <header className="professional-header">
         <div className="header-decoration"></div>
-        <div className="header-actions" style={{position: 'absolute', right: '20px', top: '20px', display: 'flex', gap: '10px'}}>
-          <button className="logout-button" onClick={handleLogout} style={{
-            padding: '8px 15px',
-            backgroundColor: '#e6cc6f',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '14px',
-            fontWeight: '600',
-            transition: 'all 0.3s ease'
-          }}>
+        <div className="header-actions">
+          <button 
+            className="subscription-button" 
+            onClick={handleNavigateToSubscription}
+            type="button"
+          >
+            <CreditCard size={16} /> Gerenciar Assinatura
+          </button>
+          <button 
+            className="logout-button" 
+            onClick={handleLogout}
+            type="button"
+          >
             <LogOut size={16} /> Sair
           </button>
         </div>
@@ -2447,6 +2553,123 @@ const ProfessionalArea = () => {
               >
                 Sim, Excluir
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal de Gerenciamento de Assinatura */}
+      {showSubscriptionModal && (
+        <div className="modal-overlay" onClick={() => setShowSubscriptionModal(false)}>
+          <div className="subscription-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>💳 Gerenciar Assinatura</h2>
+              <button className="modal-close" onClick={() => setShowSubscriptionModal(false)}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="subscription-modal-body">
+              {subscriptionData.loading ? (
+                <div className="loading-container">
+                  <Loader className="spinner" size={48} />
+                  <p>Carregando dados da assinatura...</p>
+                </div>
+              ) : (
+                <>
+                  {/* Card de Assinatura Atual */}
+                  <div className="subscription-card-mini">
+                    <div className="subscription-info-header">
+                      <CreditCard size={24} />
+                      <h3>Plano Atual</h3>
+                    </div>
+                    <div className="subscription-details">
+                      <div className="detail-row">
+                        <span className="detail-label">Plano:</span>
+                        <span className="detail-value">
+                          {subscriptionData.subscription 
+                            ? subscriptionData.subscription.description || 'Assinatura Mensal'
+                            : 'Sem assinatura ativa'}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Valor:</span>
+                        <span className="detail-value price">
+                          {subscriptionData.subscription 
+                            ? formatCurrency(subscriptionData.subscription.value)
+                            : 'R$ 34,90/mês'}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Status:</span>
+                        <span className={`badge ${subscriptionData.subscription?.status === 'ACTIVE' ? 'active' : 'inactive'}`}>
+                          {subscriptionData.subscription?.status === 'ACTIVE' ? 'Ativa' : 'Inativa'}
+                        </span>
+                      </div>
+                      {subscriptionData.subscription?.nextDueDate && (
+                        <div className="detail-row">
+                          <span className="detail-label">Próximo Vencimento:</span>
+                          <span className="detail-value">{formatDate(subscriptionData.subscription.nextDueDate)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Faturas Pendentes */}
+                  <div className="pending-section">
+                    <h4>📋 Faturas em Aberto</h4>
+                    {subscriptionData.pendingInvoices.length > 0 ? (
+                      <div className="invoices-mini-list">
+                        {subscriptionData.pendingInvoices.map(invoice => (
+                          <div key={invoice.id} className="invoice-mini-item">
+                            <div className="invoice-mini-info">
+                              <Calendar size={16} />
+                              <span className="invoice-date">Venc: {formatDate(invoice.dueDate)}</span>
+                            </div>
+                            <span className={`invoice-status ${invoice.status === 'OVERDUE' ? 'overdue' : 'pending'}`}>
+                              {invoice.status === 'OVERDUE' ? 'Vencida' : 'Pendente'}
+                            </span>
+                            <span className="invoice-value">{formatCurrency(invoice.value)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="no-pending">✅ Nenhuma fatura pendente no momento</p>
+                    )}
+                  </div>
+
+                  {/* Histórico Resumido */}
+                  <div className="history-section">
+                    <h4>📊 Últimos Pagamentos</h4>
+                    {subscriptionData.recentPayments.length > 0 ? (
+                      <div className="payment-list">
+                        {subscriptionData.recentPayments.map(payment => (
+                          <div key={payment.id} className="payment-item">
+                            <div className="payment-date">
+                              <Calendar size={16} />
+                              {formatDate(payment.paymentDate || payment.dueDate)}
+                            </div>
+                            <span className="payment-status paid">Pago</span>
+                            <span className="payment-value">{formatCurrency(payment.value)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="no-pending">Nenhum pagamento registrado ainda</p>
+                    )}
+                  </div>
+
+                  {/* Ações */}
+                  <div className="subscription-actions">
+                    <button className="btn-view-full" onClick={() => {
+                      setShowSubscriptionModal(false)
+                      navigate('/subscription-management')
+                    }}>
+                      Ver Detalhes Completos
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
