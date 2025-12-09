@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { supabase } from '../lib/supabaseClient.js'
 
 const AppContext = createContext()
 
