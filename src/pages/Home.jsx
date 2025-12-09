@@ -9,6 +9,16 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      {/* Corações flutuantes */}
+      <div className="floating-hearts">
+        <Heart className="heart heart-1" />
+        <Heart className="heart heart-2" />
+        <Heart className="heart heart-3" />
+        <Heart className="heart heart-4" />
+        <Heart className="heart heart-5" />
+        <Heart className="heart heart-6" />
+      </div>
+
       <button className="admin-btn" onClick={() => navigate('/profissional')}>
         <Crown size={18} />
       </button>

@@ -1,9 +1,9 @@
 // Cliente para integração com Asaas API
-const ASAAS_API_KEY = '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjI2YmI2ZDkwLWUxYzktNGUwYy05OTVjLTY2MTcwZWY3NWIyZjo6JGFhY2hfNzU5ODZkN2YtNTQyOC00YzYxLThlYzAtMGVmMzZjOWQ1MDZj'
-const ASAAS_API_URL = 'https://api.asaas.com/v3'
+const ASAAS_API_KEY = import.meta.env.VITE_ASAAS_API_KEY
+const ASAAS_API_URL = import.meta.env.VITE_ASAAS_API_URL || 'https://api.asaas.com/v3'
 
 // Valor fixo da assinatura mensal
-const SUBSCRIPTION_VALUE = 34.90
+const SUBSCRIPTION_VALUE = parseFloat(import.meta.env.VITE_SUBSCRIPTION_VALUE) || 34.90
 
 class AsaasClient {
   constructor() {

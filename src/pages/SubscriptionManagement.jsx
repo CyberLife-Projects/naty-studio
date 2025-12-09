@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, CreditCard, FileText, DollarSign, Calendar, CheckCircle, AlertCircle, Download, Copy, Loader } from 'lucide-react'
 import { asaasClient, PAYMENT_STATUS, BILLING_TYPES, SUBSCRIPTION_PLAN } from '../lib/asaasClient'
-import { supabase } from '../lib/supabaseClient.js'
+import { supabase } from '../lib/supabaseClient'
 import './SubscriptionManagement.css'
 
 const SubscriptionManagement = () => {

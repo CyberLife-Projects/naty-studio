@@ -14,7 +14,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cliente" element={<ClientArea />} />
           <Route path="/profissional" element={<ProfessionalArea />} />
-          <Route path="/admin" element={<ProfessionalArea />} />
           <Route path="/bloqueador" element={<Bloqueador />} />
         </Routes>
       </Router>
