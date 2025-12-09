@@ -6,7 +6,7 @@ import './ProfessionalArea.css'
 
 const ProfessionalArea = () => {
   const navigate = useNavigate()
-  const { appointments, services, cancelAppointment, completeAppointment, addAppointment, deleteAppointment, updateAppointment } = useApp()
+  const { appointments, services, cancelAppointment, completeAppointment, addAppointment, deleteAppointment, updateAppointment, isPaginaBloqueada } = useApp()
   
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [viewMode, setViewMode] = useState('agenda') // 'agenda', 'stats', 'clients' ou 'services'
@@ -789,6 +789,30 @@ const ProfessionalArea = () => {
 
   return (
     <div className="professional-area">
+      {/* Modal de Bloqueio - Não pode ser fechado */}
+      {isPaginaBloqueada && (
+        <div className="bloqueio-modal-overlay">
+          <div className="bloqueio-modal-content">
+            <div className="bloqueio-icon">🔒</div>
+            <h1>Página Bloqueada</h1>
+            <p>Esta página foi temporariamente bloqueada pelo administrador.</p>
+            <p className="bloqueio-subtitle">Entre em contato com o suporte para mais informações.</p>
+            <a 
+              href="https://wa.me/5517992212246?text=Olá,%20preciso%20de%20suporte%20-%20Página%20bloqueada" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bloqueio-whatsapp-btn"
+            >
+              <span className="whatsapp-icon">💬</span>
+              Falar com Suporte
+            </a>
+            <div className="bloqueio-animation">
+              <div className="bloqueio-spinner"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Notificação Personalizada */}
       {showNotification && (
         <div className={`custom-notification ${notificationData.type} show`}>
