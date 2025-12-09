@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Crown, Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient.js'
 import logoImage from '../img/logo-sem-cor.png'
 import './AdminLogin.css'
 
