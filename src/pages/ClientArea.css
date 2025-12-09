@@ -1,6 +1,6 @@
 .client-area {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-light) 0%, var(--light-purple) 100%);
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
   padding-bottom: 20px;
   position: relative;
   overflow-x: hidden;
@@ -15,9 +15,9 @@
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(155, 126, 189, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(232, 180, 212, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(212, 181, 232, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 20% 30%, rgba(184, 134, 11, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(139, 105, 20, 0.08) 0%, transparent 50%);
   animation: backgroundPulse 15s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
@@ -35,10 +35,10 @@
 }
 
 .client-header {
-  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+  background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
   color: white;
   padding: 20px;
-  box-shadow: 0 4px 12px var(--shadow);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.5);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -87,7 +87,7 @@
 .header-subtitle {
   font-size: 0.9rem;
   opacity: 0.9;
-  font-weight: 300;
+  font-weight: 600;
   margin-top: 5px;
   text-align: center;
 }
@@ -177,7 +177,7 @@
   left: 10%;
   right: 10%;
   height: 3px;
-  background: var(--light-pink);
+  background: rgba(184, 134, 11, 0.2);
   z-index: 0;
 }
 
@@ -195,31 +195,31 @@
   height: 40px;
   border-radius: 50%;
   background: white;
-  border: 3px solid var(--light-pink);
+  border: 3px solid rgba(184, 134, 11, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: var(--text-light);
+  color: #444444;
   transition: all 0.3s ease;
 }
 
 .step.active .step-number {
-  background: var(--dark-purple);
-  border-color: var(--dark-purple);
+  background: var(--primary-gold);
+  border-color: var(--primary-gold);
   color: white;
   transform: scale(1.1);
 }
 
 .step span {
-  font-size: 0.8rem;
-  color: var(--text-light);
-  font-weight: 500;
+  font-size: 0.85rem;
+  color: #333333;
+  font-weight: 600;
 }
 
 .step.active span {
-  color: var(--dark-purple);
-  font-weight: 600;
+  color: var(--primary-gold);
+  font-weight: 700;
 }
 
 /* Step Content */
@@ -229,9 +229,11 @@
 
 .step-content h2 {
   text-align: center;
-  color: var(--text-dark);
+  color: #000000;
   margin-bottom: 30px;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Service Categories */
@@ -240,11 +242,11 @@
 }
 
 .category-title {
-  color: var(--dark-purple);
+  color: var(--primary-gold);
   font-size: 1.3rem;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 2px solid var(--light-purple);
+  border-bottom: 2px solid rgba(184, 134, 11, 0.3);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -262,7 +264,7 @@
   background: white;
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 4px 12px var(--shadow);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.2);
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid transparent;
@@ -277,7 +279,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, var(--primary-purple), var(--accent-pink));
+  background: linear-gradient(180deg, var(--primary-gold), var(--accent-gold));
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
@@ -288,22 +290,23 @@
 
 .service-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px var(--shadow);
-  border-color: var(--primary-purple);
+  box-shadow: 0 6px 16px rgba(184, 134, 11, 0.4);
+  border-color: var(--primary-gold);
 }
 
 .service-card h3 {
-  color: var(--dark-purple);
+  color: var(--primary-gold);
   margin-bottom: 8px;
   font-size: 1.3rem;
   font-family: 'Quicksand', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .service-description {
-  color: var(--text-light);
-  font-size: 0.9rem;
+  color: #333333;
+  font-size: 0.95rem;
   margin-bottom: 15px;
+  font-weight: 500;
 }
 
 .service-details {
@@ -311,16 +314,17 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 10px;
-  border-top: 1px solid var(--light-pink);
+  border-top: 1px solid rgba(184, 134, 11, 0.2);
 }
 
 .service-duration {
-  color: var(--text-light);
-  font-size: 0.85rem;
+  color: #555555;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .service-price {
-  color: var(--dark-purple);
+  color: var(--primary-gold);
   font-weight: 600;
   font-size: 1.1rem;
 }
@@ -422,13 +426,13 @@
 
 .date-month {
   font-size: 0.85rem;
-  color: var(--text-light);
+  color: #444444;
   text-transform: uppercase;
 }
 
 .date-weekday {
   font-size: 0.75rem;
-  color: var(--text-light);
+  color: #444444;
   margin-top: 4px;
   text-transform: capitalize;
 }
@@ -481,7 +485,7 @@
   padding: 30px;
   border-radius: 12px;
   text-align: center;
-  color: var(--text-light);
+  color: #444444;
 }
 
 .no-slots p {
@@ -514,9 +518,9 @@
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: var(--text-dark);
-  font-weight: 500;
-  font-size: 0.95rem;
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 .form-group input {
@@ -527,7 +531,7 @@
   font-size: 1rem;
   font-family: 'Quicksand', sans-serif;
   transition: all 0.3s ease;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .form-group input:focus {
@@ -598,7 +602,7 @@
   font-size: 1rem;
   font-family: 'Quicksand', sans-serif;
   transition: all 0.3s ease;
-  font-weight: 400;
+  font-weight: 600;
   background: white;
   cursor: pointer;
 }
@@ -707,7 +711,7 @@
 
 .page-footer p {
   font-size: 0.75rem;
-  color: var(--text-light);
+  color: #444444;
   opacity: 0.5;
   transition: opacity 0.3s ease;
 }

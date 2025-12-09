@@ -1,4 +1,4 @@
-# 🚀 Guia de Configuração do Supabase - Naty Studio
+# 🚀 Guia de Configuração do Supabase - Bia Souza Nails
 
 Este guia fornece instruções passo a passo para configurar o backend do sistema de agendamento usando Supabase.
 
@@ -13,7 +13,7 @@ Este guia fornece instruções passo a passo para configurar o backend do sistem
 1. Acesse [https://app.supabase.com](https://app.supabase.com)
 2. Clique em **"New Project"**
 3. Preencha os dados:
-   - **Name**: Naty Studio (ou nome de sua preferência)
+   - **Name**: Bia Souza Nails (ou nome de sua preferência)
    - **Database Password**: Crie uma senha segura (guarde-a!)
    - **Region**: Escolha a região mais próxima (ex: South America - São Paulo)
 4. Clique em **"Create new project"**
@@ -102,7 +102,7 @@ INSERT INTO auth.users (
   gen_random_uuid(),
   'authenticated',
   'authenticated',
-  'admin@natystudio.com',
+  'admin@biasouzanails.com',
   crypt('suaSenhaSegura123', gen_salt('bf')),
   NOW(),
   '{"provider":"email","providers":["email"]}',
@@ -173,7 +173,7 @@ INSERT INTO auth.users (
 2. **services** - Serviços oferecidos
    - id (UUID)
    - name (TEXT)
-   - category (TEXT: 'cilios' ou 'sobrancelhas')
+   - category (TEXT: 'manicure' ou 'nailart')
    - price (DECIMAL)
    - duration (INTEGER, em minutos)
    - requires_maintenance (BOOLEAN)
@@ -293,4 +293,4 @@ Quando for colocar em produção:
 
 ---
 
-**Desenvolvido para Naty Studio** 💅✨
+**Desenvolvido para Bia Souza Nails** 💅✨

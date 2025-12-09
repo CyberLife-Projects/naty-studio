@@ -1,4 +1,4 @@
-# ✅ Checklist de Verificação - Sistema Naty Studio
+# ✅ Checklist de Verificação - Sistema Bia Souza Nails
 
 Use este checklist para garantir que tudo está funcionando perfeitamente após a configuração.
 
@@ -24,7 +24,7 @@ Use este checklist para garantir que tudo está funcionando perfeitamente após 
 
 ### 1. Área Inicial (Home)
 - [ ] Página inicial carrega sem erros
-- [ ] Título "Naty Studio" visível
+- [ ] Título "Bia Souza Nails" visível
 - [ ] Botões "Agendar Horário" e "Área Profissional" funcionam
 - [ ] Tema dourado aplicado corretamente
 
@@ -268,7 +268,7 @@ Se todos os itens acima estão marcados, seu sistema está:
 - ✅ **Rápido** - Real-time ativo
 - ✅ **Pronto** - Pode ir para produção
 
-**Parabéns! O sistema Naty Studio está pronto para uso!** 🚀
+**Parabéns! O sistema Bia Souza Nails está pronto para uso!** 🚀
 
 ---
 

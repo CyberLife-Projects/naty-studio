@@ -1,4 +1,4 @@
-# ⚡ Quick Start - Naty Studio
+# ⚡ Quick Start - Bia Souza Nails
 
 ## 🎯 Inicialização Rápida
 
@@ -140,7 +140,8 @@ npm run lint
 
 ## 📱 Contato
 
-**WhatsApp**: +55 17 99221-2246 (Naty Studio)
+**WhatsApp**: +55 17 99979-1733 (Bia Souza Nails)
+**Instagram**: @bia_souzanails_
 
 ---
 
@@ -152,4 +153,4 @@ Para instruções detalhadas de configuração, solução de problemas e recurso
 
 ---
 
-**Desenvolvido para Naty Studio** 💅✨
+**Desenvolvido para Bia Souza Nails** 💅✨

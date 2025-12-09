@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cliente" element={<ClientArea />} />
-          <Route path="/admin" element={<ProfessionalArea />} />
+          <Route path="/profissional" element={<ProfessionalArea />} />
         </Routes>
       </Router>
     </AppProvider>

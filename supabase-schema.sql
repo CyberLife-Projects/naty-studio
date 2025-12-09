@@ -21,11 +21,11 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 -- =============================================
 -- TABELA: services
 -- =============================================
--- Serviços oferecidos (cílios e sobrancelhas)
+-- Serviços oferecidos (manicure e nail art)
 CREATE TABLE IF NOT EXISTS public.services (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
-  category TEXT NOT NULL CHECK (category IN ('cilios', 'sobrancelhas')),
+  category TEXT NOT NULL CHECK (category IN ('manicure', 'nailart')),
   price DECIMAL(10,2) NOT NULL,
   duration INTEGER NOT NULL, -- duração em minutos
   description TEXT,
@@ -177,13 +177,16 @@ CREATE TRIGGER on_auth_user_created
 -- DADOS INICIAIS: Serviços
 -- =============================================
 INSERT INTO public.services (name, category, price, duration, description, requires_maintenance, maintenance_interval_days, is_active) VALUES
-  ('Volume Brasileiro Aplicação', 'cilios', 150.00, 120, 'Aplicação completa de cílios fio a fio estilo brasileiro', true, 15, true),
-  ('Volume Brasileiro Manutenção', 'cilios', 80.00, 90, 'Manutenção de cílios fio a fio estilo brasileiro', false, null, true),
-  ('Volume Egípcio Aplicação', 'cilios', 200.00, 150, 'Aplicação completa de cílios fio a fio estilo egípcio', true, 15, true),
-  ('Volume Egípcio Manutenção', 'cilios', 100.00, 90, 'Manutenção de cílios fio a fio estilo egípcio', false, null, true),
-  ('Design de Sobrancelhas c/ Henna', 'sobrancelhas', 50.00, 45, 'Design e coloração de sobrancelhas com henna', true, 30, true),
-  ('Design de Sobrancelhas', 'sobrancelhas', 35.00, 30, 'Design de sobrancelhas sem coloração', false, null, true),
-  ('Retoque de Henna', 'sobrancelhas', 30.00, 20, 'Retoque de henna em sobrancelhas', false, null, true)
+  ('Manicure Completa', 'manicure', 50.00, 60, 'Manicure completa com esmaltagem tradicional', true, 15, true),
+  ('Pedicure Completa', 'manicure', 60.00, 75, 'Pedicure completa com esmaltagem e hidratação', true, 20, true),
+  ('Esmaltação em Gel', 'manicure', 70.00, 45, 'Esmaltagem com gel que dura até 3 semanas', true, 20, true),
+  ('Manutenção de Gel', 'manicure', 50.00, 40, 'Remoção e reaplicação de esmalte em gel', false, null, true),
+  ('Unhas Decoradas Simples', 'nailart', 80.00, 60, 'Nail art com desenhos simples e elegantes', false, null, true),
+  ('Unhas Decoradas Premium', 'nailart', 120.00, 90, 'Nail art elaborada com pedrarias e designs exclusivos', false, null, true),
+  ('Alongamento em Fibra', 'nailart', 150.00, 120, 'Alongamento de unhas com fibra de vidro', true, 21, true),
+  ('Alongamento em Gel', 'nailart', 180.00, 150, 'Alongamento de unhas em gel com modelagem', true, 21, true),
+  ('Manutenção de Alongamento', 'nailart', 100.00, 90, 'Manutenção e preenchimento de alongamento', false, null, true),
+  ('Blindagem de Unhas', 'manicure', 90.00, 60, 'Tratamento de fortalecimento com blindagem', true, 15, true)
 ON CONFLICT (name) DO NOTHING;
 
 -- =============================================

@@ -1,11 +1,11 @@
-# Sistema de Agendamento de Cílios 💅✨
+# Sistema de Agendamento de Unhas 💅✨
 
-Sistema completo de agendamento para studio de cílios com interface feminina e elegante, otimizado para mobile.
+Sistema completo de agendamento para studio de unhas com interface feminina e elegante, otimizado para mobile.
 
 ## 🌸 Características
 
 ### Área do Cliente
-- ✨ Visualização de serviços disponíveis (Fio a Fio, Volume Russo, Mega Volume, Manutenção)
+- ✨ Visualização de serviços disponíveis (Manicure, Pedicure, Nail Art, Alongamento)
 - 📅 Calendário interativo para escolha de data
 - ⏰ Seleção de horários disponíveis
 - 📝 Formulário de agendamento intuitivo

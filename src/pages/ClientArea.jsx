@@ -8,6 +8,10 @@ const ClientArea = () => {
   const navigate = useNavigate()
   const { services, getAvailableSlots, addAppointment } = useApp()
   
+  // Debug: verificar serviços
+  console.log('Serviços carregados:', services)
+  console.log('Total de serviços:', services?.length || 0)
+  
   const [step, setStep] = useState(1)
   const [datePage, setDatePage] = useState(0)
   const [formData, setFormData] = useState({
@@ -66,7 +70,7 @@ const ClientArea = () => {
   }
 
   const sendWhatsAppNotification = (appointment) => {
-    const phoneNumber = '5517992212246' // WhatsApp da Naty Studio
+    const phoneNumber = '5517999791733' // WhatsApp da BS Carvalho
     
     // Formatar a data
     const dateObj = new Date(appointment.date + 'T12:00:00')
@@ -78,7 +82,7 @@ const ClientArea = () => {
     })
     
     // Criar mensagem
-    const message = `*NOVO AGENDAMENTO - Naty Studio*
+    const message = `*NOVO AGENDAMENTO - BS Carvalho*
 
 *Data:* ${dateFormatted}
 *Horário:* ${appointment.time}
@@ -214,7 +218,7 @@ Agendamento realizado com sucesso!`
         <div className="header-decoration"></div>
         <div className="header-content">
           <h1><Eye size={24} style={{marginRight: '10px', display: 'inline-block', verticalAlign: 'middle'}} />Agende seu Horário</h1>
-          <p className="header-subtitle">Naty Studio</p>
+          <p className="header-subtitle">BS Carvalho</p>
         </div>
       </header>
 
@@ -245,9 +249,9 @@ Agendamento realizado com sucesso!`
             <h2>Escolha seu Serviço</h2>
             
             <div className="service-category">
-              <h3 className="category-title"><Eye size={20} /> Extensão de Cílios</h3>
+              <h3 className="category-title"><Eye size={20} /> Manicure & Unhas Decoradas</h3>
               <div className="services-grid">
-                {services.filter(s => s.category === 'cilios').map(service => (
+                {services.filter(s => s.category === 'manicure').map(service => (
                   <div 
                     key={service.id} 
                     className="service-card"
@@ -265,9 +269,9 @@ Agendamento realizado com sucesso!`
             </div>
 
             <div className="service-category">
-              <h3 className="category-title">✨ Design de Sobrancelhas</h3>
+              <h3 className="category-title">✨ Nail Art & Alongamento</h3>
               <div className="services-grid">
-                {services.filter(s => s.category === 'sobrancelhas').map(service => (
+                {services.filter(s => s.category === 'nailart').map(service => (
                   <div 
                     key={service.id} 
                     className="service-card"

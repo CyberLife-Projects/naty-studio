@@ -12,9 +12,133 @@ export const useApp = () => {
 }
 
 export const AppProvider = ({ children }) => {
+  // Serviços mockados como padrão
+  const mockServices = [
+    {
+      id: 'mock-1',
+      name: 'Manicure Completa',
+      duration: '1h',
+      price: 'R$ 50,00',
+      description: 'Manicure completa com esmaltagem tradicional',
+      category: 'manicure',
+      requiresMaintenance: true,
+      maintenanceIntervalDays: 15,
+      rawDuration: 60,
+      rawPrice: 50.00
+    },
+    {
+      id: 'mock-2',
+      name: 'Pedicure Completa',
+      duration: '1h 15min',
+      price: 'R$ 60,00',
+      description: 'Pedicure completa com esmaltagem e hidratação',
+      category: 'manicure',
+      requiresMaintenance: true,
+      maintenanceIntervalDays: 20,
+      rawDuration: 75,
+      rawPrice: 60.00
+    },
+    {
+      id: 'mock-3',
+      name: 'Esmaltação em Gel',
+      duration: '45min',
+      price: 'R$ 70,00',
+      description: 'Esmaltagem com gel que dura até 3 semanas',
+      category: 'manicure',
+      requiresMaintenance: true,
+      maintenanceIntervalDays: 20,
+      rawDuration: 45,
+      rawPrice: 70.00
+    },
+    {
+      id: 'mock-4',
+      name: 'Manutenção de Gel',
+      duration: '40min',
+      price: 'R$ 50,00',
+      description: 'Remoção e reaplicação de esmalte em gel',
+      category: 'manicure',
+      requiresMaintenance: false,
+      maintenanceIntervalDays: null,
+      rawDuration: 40,
+      rawPrice: 50.00
+    },
+    {
+      id: 'mock-5',
+      name: 'Unhas Decoradas Simples',
+      duration: '1h',
+      price: 'R$ 80,00',
+      description: 'Nail art com desenhos simples e elegantes',
+      category: 'nailart',
+      requiresMaintenance: false,
+      maintenanceIntervalDays: null,
+      rawDuration: 60,
+      rawPrice: 80.00
+    },
+    {
+      id: 'mock-6',
+      name: 'Unhas Decoradas Premium',
+      duration: '1h 30min',
+      price: 'R$ 120,00',
+      description: 'Nail art elaborada com pedrarias e designs exclusivos',
+      category: 'nailart',
+      requiresMaintenance: false,
+      maintenanceIntervalDays: null,
+      rawDuration: 90,
+      rawPrice: 120.00
+    },
+    {
+      id: 'mock-7',
+      name: 'Alongamento em Fibra',
+      duration: '2h',
+      price: 'R$ 150,00',
+      description: 'Alongamento de unhas com fibra de vidro',
+      category: 'nailart',
+      requiresMaintenance: true,
+      maintenanceIntervalDays: 21,
+      rawDuration: 120,
+      rawPrice: 150.00
+    },
+    {
+      id: 'mock-8',
+      name: 'Alongamento em Gel',
+      duration: '2h 30min',
+      price: 'R$ 180,00',
+      description: 'Alongamento de unhas em gel com modelagem',
+      category: 'nailart',
+      requiresMaintenance: true,
+      maintenanceIntervalDays: 21,
+      rawDuration: 150,
+      rawPrice: 180.00
+    },
+    {
+      id: 'mock-9',
+      name: 'Manutenção de Alongamento',
+      duration: '1h 30min',
+      price: 'R$ 100,00',
+      description: 'Manutenção e preenchimento de alongamento',
+      category: 'nailart',
+      requiresMaintenance: false,
+      maintenanceIntervalDays: null,
+      rawDuration: 90,
+      rawPrice: 100.00
+    },
+    {
+      id: 'mock-10',
+      name: 'Blindagem de Unhas',
+      duration: '1h',
+      price: 'R$ 90,00',
+      description: 'Tratamento de fortalecimento com blindagem',
+      category: 'manicure',
+      requiresMaintenance: true,
+      maintenanceIntervalDays: 15,
+      rawDuration: 60,
+      rawPrice: 90.00
+    }
+  ]
+
   // Estados
   const [appointments, setAppointments] = useState([])
-  const [services, setServices] = useState([])
+  const [services, setServices] = useState(mockServices)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -27,30 +151,170 @@ export const AppProvider = ({ children }) => {
   // Carregar serviços e agendamentos ao montar
   useEffect(() => {
     const initialize = async () => {
-      await Promise.all([fetchServices(), fetchAppointments()])
+      // Apenas buscar appointments, serviços já estão no estado inicial
+      await fetchAppointments()
+      console.log('✅ Usando serviços mockados:', services.length, 'serviços')
       setLoading(false)
     }
     initialize()
 
-    // Inscrever para mudanças em tempo real
-    const appointmentsSubscription = supabase
-      .channel('appointments_changes')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'appointments' },
-        (payload) => {
-          console.log('Mudança em appointments:', payload)
-          handleAppointmentChange(payload)
-        }
-      )
-      .subscribe()
+    // Inscrever para mudanças em tempo real (apenas se Supabase estiver configurado)
+    if (supabase) {
+      const appointmentsSubscription = supabase
+        .channel('appointments_changes')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'appointments' },
+          (payload) => {
+            console.log('Mudança em appointments:', payload)
+            handleAppointmentChange(payload)
+          }
+        )
+        .subscribe()
 
-    return () => {
-      appointmentsSubscription.unsubscribe()
+      return () => {
+        appointmentsSubscription.unsubscribe()
+      }
     }
   }, [])
 
   // Buscar serviços do Supabase
   const fetchServices = async () => {
+    // Serviços mockados como fallback
+    const mockServices = [
+      {
+        id: 'mock-1',
+        name: 'Manicure Completa',
+        duration: '1h',
+        price: 'R$ 50,00',
+        description: 'Manicure completa com esmaltagem tradicional',
+        category: 'manicure',
+        requiresMaintenance: true,
+        maintenanceIntervalDays: 15,
+        rawDuration: 60,
+        rawPrice: 50.00
+      },
+      {
+        id: 'mock-2',
+        name: 'Pedicure Completa',
+        duration: '1h 15min',
+        price: 'R$ 60,00',
+        description: 'Pedicure completa com esmaltagem e hidratação',
+        category: 'manicure',
+        requiresMaintenance: true,
+        maintenanceIntervalDays: 20,
+        rawDuration: 75,
+        rawPrice: 60.00
+      },
+      {
+        id: 'mock-3',
+        name: 'Esmaltação em Gel',
+        duration: '45min',
+        price: 'R$ 70,00',
+        description: 'Esmaltagem com gel que dura até 3 semanas',
+        category: 'manicure',
+        requiresMaintenance: true,
+        maintenanceIntervalDays: 20,
+        rawDuration: 45,
+        rawPrice: 70.00
+      },
+      {
+        id: 'mock-4',
+        name: 'Manutenção de Gel',
+        duration: '40min',
+        price: 'R$ 50,00',
+        description: 'Remoção e reaplicação de esmalte em gel',
+        category: 'manicure',
+        requiresMaintenance: false,
+        maintenanceIntervalDays: null,
+        rawDuration: 40,
+        rawPrice: 50.00
+      },
+      {
+        id: 'mock-5',
+        name: 'Unhas Decoradas Simples',
+        duration: '1h',
+        price: 'R$ 80,00',
+        description: 'Nail art com desenhos simples e elegantes',
+        category: 'nailart',
+        requiresMaintenance: false,
+        maintenanceIntervalDays: null,
+        rawDuration: 60,
+        rawPrice: 80.00
+      },
+      {
+        id: 'mock-6',
+        name: 'Unhas Decoradas Premium',
+        duration: '1h 30min',
+        price: 'R$ 120,00',
+        description: 'Nail art elaborada com pedrarias e designs exclusivos',
+        category: 'nailart',
+        requiresMaintenance: false,
+        maintenanceIntervalDays: null,
+        rawDuration: 90,
+        rawPrice: 120.00
+      },
+      {
+        id: 'mock-7',
+        name: 'Alongamento em Fibra',
+        duration: '2h',
+        price: 'R$ 150,00',
+        description: 'Alongamento de unhas com fibra de vidro',
+        category: 'nailart',
+        requiresMaintenance: true,
+        maintenanceIntervalDays: 21,
+        rawDuration: 120,
+        rawPrice: 150.00
+      },
+      {
+        id: 'mock-8',
+        name: 'Alongamento em Gel',
+        duration: '2h 30min',
+        price: 'R$ 180,00',
+        description: 'Alongamento de unhas em gel com modelagem',
+        category: 'nailart',
+        requiresMaintenance: true,
+        maintenanceIntervalDays: 21,
+        rawDuration: 150,
+        rawPrice: 180.00
+      },
+      {
+        id: 'mock-9',
+        name: 'Manutenção de Alongamento',
+        duration: '1h 30min',
+        price: 'R$ 100,00',
+        description: 'Manutenção e preenchimento de alongamento',
+        category: 'nailart',
+        requiresMaintenance: false,
+        maintenanceIntervalDays: null,
+        rawDuration: 90,
+        rawPrice: 100.00
+      },
+      {
+        id: 'mock-10',
+        name: 'Blindagem de Unhas',
+        duration: '1h',
+        price: 'R$ 90,00',
+        description: 'Tratamento de fortalecimento com blindagem',
+        category: 'manicure',
+        requiresMaintenance: true,
+        maintenanceIntervalDays: 15,
+        rawDuration: 60,
+        rawPrice: 90.00
+      }
+    ]
+
+    console.log('🔍 Iniciando fetchServices...')
+    console.log('📦 Mock services preparados:', mockServices.length)
+    console.log('🔌 Supabase configurado?', supabase !== null)
+
+    // Se não houver Supabase configurado, usar mock imediatamente
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado, usando mock services')
+      setServices(mockServices)
+      console.log('✅ Mock services setados:', mockServices.length)
+      return
+    }
+
     try {
       const { data, error } = await supabase
         .from('services')
@@ -61,29 +325,49 @@ export const AppProvider = ({ children }) => {
 
       if (error) throw error
       
-      // Mapear para o formato esperado pela aplicação
-      const mappedServices = data.map(service => ({
-        id: service.id,
-        name: service.name,
-        duration: formatDuration(service.duration),
-        price: formatPrice(service.price),
-        description: service.description,
-        category: service.category,
-        requiresMaintenance: service.requires_maintenance,
-        maintenanceIntervalDays: service.maintenance_interval_days,
-        rawDuration: service.duration, // Manter duração em minutos para cálculos
-        rawPrice: service.price // Manter preço numérico para cálculos
-      }))
-
-      setServices(mappedServices)
+      console.log('✅ Resposta do Supabase:', { data, error })
+      
+      // Se houver dados do banco, mapear para o formato esperado
+      if (data && data.length > 0) {
+        console.log('📊 Usando dados do banco:', data.length, 'serviços')
+        const mappedServices = data.map(service => ({
+          id: service.id,
+          name: service.name,
+          duration: formatDuration(service.duration),
+          price: formatPrice(service.price),
+          description: service.description,
+          category: service.category,
+          requiresMaintenance: service.requires_maintenance,
+          maintenanceIntervalDays: service.maintenance_interval_days,
+          rawDuration: service.duration,
+          rawPrice: service.price
+        }))
+        setServices(mappedServices)
+        console.log('✅ Serviços do banco setados:', mappedServices.length)
+      } else {
+        // Se não houver dados, usar mockados
+        console.log('⚠️ Banco vazio, usando mock services')
+        setServices(mockServices)
+        console.log('✅ Mock services setados:', mockServices.length)
+      }
     } catch (err) {
-      console.error('Erro ao buscar serviços:', err)
-      setError(err.message)
+      console.error('❌ Erro ao buscar serviços:', err)
+      // Em caso de erro, usar serviços mockados
+      console.log('🔄 Usando mock services devido ao erro')
+      setServices(mockServices)
+      console.log('✅ Mock services setados após erro:', mockServices.length)
     }
   }
 
   // Buscar agendamentos do Supabase
   const fetchAppointments = async () => {
+    // Se não houver Supabase configurado, iniciar com array vazio
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado, sem agendamentos para carregar')
+      setAppointments([])
+      return
+    }
+
     try {
       const { data, error } = await supabase
         .from('appointments')
@@ -224,6 +508,11 @@ export const AppProvider = ({ children }) => {
 
   // Adicionar novo agendamento
   const addAppointment = async (appointmentData) => {
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado, agendamento não pode ser salvo')
+      return { success: false, data: null, error: 'Supabase não configurado' }
+    }
+
     try {
       setError(null)
 
@@ -280,6 +569,11 @@ export const AppProvider = ({ children }) => {
 
   // Cancelar agendamento
   const cancelAppointment = async (id) => {
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado')
+      return { success: false, error: 'Supabase não configurado' }
+    }
+
     try {
       setError(null)
 
@@ -312,6 +606,11 @@ export const AppProvider = ({ children }) => {
 
   // Remover agendamento permanentemente
   const deleteAppointment = async (id) => {
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado')
+      return { success: false, error: 'Supabase não configurado' }
+    }
+
     try {
       setError(null)
 
@@ -335,6 +634,11 @@ export const AppProvider = ({ children }) => {
 
   // Atualizar agendamento
   const updateAppointment = async (id, updatedData) => {
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado')
+      return { success: false, data: null, error: 'Supabase não configurado' }
+    }
+
     try {
       setError(null)
 
@@ -378,6 +682,11 @@ export const AppProvider = ({ children }) => {
 
   // Concluir agendamento
   const completeAppointment = async (id) => {
+    if (!supabase) {
+      console.log('⚠️ Supabase não configurado')
+      return { success: false, error: 'Supabase não configurado' }
+    }
+
     try {
       setError(null)
 

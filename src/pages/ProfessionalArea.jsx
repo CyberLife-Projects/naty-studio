@@ -20,14 +20,14 @@ const ProfessionalArea = () => {
   const [serviceToDelete, setServiceToDelete] = useState(null)
   const [newService, setNewService] = useState({
     name: '',
-    category: 'cilios',
+    category: 'manicure',
     duration: '',
     price: '',
     description: ''
   })
   const [editServiceData, setEditServiceData] = useState({
     name: '',
-    category: 'cilios',
+    category: 'manicure',
     duration: '',
     price: '',
     description: ''
@@ -68,9 +68,18 @@ const ProfessionalArea = () => {
     recurringMonths: 3 // quantos meses
   })
 
+  // Sistema de notificações personalizadas
+  const showCustomNotification = (type, message, details = '') => {
+    setNotificationData({ type, message, details })
+    setShowNotification(true)
+    setTimeout(() => {
+      setShowNotification(false)
+    }, 5000)
+  }
+
   const handleLogin = (e) => {
     e.preventDefault()
-    if (password === 'naty123') {
+    if (password === 'bia123') {
       setIsAuthenticated(true)
     } else {
       showCustomNotification('error', 'Senha incorreta!', 'Por favor, tente novamente.')
@@ -97,15 +106,6 @@ const ProfessionalArea = () => {
     }))
   }
 
-  // Sistema de notificações personalizadas
-  const showCustomNotification = (type, message, details = '') => {
-    setNotificationData({ type, message, details })
-    setShowNotification(true)
-    setTimeout(() => {
-      setShowNotification(false)
-    }, 5000)
-  }
-
   // Notificação de boas-vindas ao entrar no admin
   useEffect(() => {
     if (isAuthenticated) {
@@ -116,8 +116,8 @@ const ProfessionalArea = () => {
       
       const pendingCount = todayAppointments.length
       const message = pendingCount > 0 
-        ? `Bem-vinda, Naty! 💖` 
-        : 'Bem-vinda, Naty! 💖'
+        ? `Bem-vinda, Bia! 💖` 
+        : 'Bem-vinda, Bia! 💖'
       const details = pendingCount > 0
         ? `Você tem ${pendingCount} agendamento(s) pendente(s) para hoje.`
         : 'Nenhum agendamento pendente para hoje. ✨'
@@ -142,7 +142,7 @@ const ProfessionalArea = () => {
     setShowAddServiceModal(false)
     setNewService({
       name: '',
-      category: 'cilios',
+      category: 'manicure',
       duration: '',
       price: '',
       description: ''
@@ -737,6 +737,23 @@ const ProfessionalArea = () => {
   if (!isAuthenticated) {
     return (
       <div className="login-container">
+        {/* Notificação de erro de login */}
+        {showNotification && (
+          <div className={`custom-notification ${notificationData.type} show`}>
+            <div className="notification-icon">
+              {notificationData.type === 'success' && '✅'}
+              {notificationData.type === 'error' && '❌'}
+              {notificationData.type === 'warning' && '⚠️'}
+              {notificationData.type === 'welcome' && '💖'}
+            </div>
+            <div className="notification-content">
+              <h4>{notificationData.message}</h4>
+              {notificationData.details && <p>{notificationData.details}</p>}
+            </div>
+            <button className="notification-close" onClick={() => setShowNotification(false)}>✕</button>
+          </div>
+        )}
+        
         <button
           className="back-arrow-btn"
           onClick={() => navigate('/')}
@@ -746,7 +763,6 @@ const ProfessionalArea = () => {
         </button>
         <div className="login-box">
           <div className="login-header">
-            <div className="login-logo">Naty Studio</div>
             <h1><Crown size={32} style={{display: 'inline-block', verticalAlign: 'middle', marginRight: '10px'}} />Área Profissional</h1>
             <p>Acesso restrito</p>
           </div>
@@ -792,7 +808,7 @@ const ProfessionalArea = () => {
 
       <header className="professional-header">
         <div className="header-decoration"></div>
-        <div className="header-actions" style={{position: 'absolute', right: '20px', top: '20px', display: 'flex', gap: '10px'}}>
+        <div className="header-actions" style={{position: 'absolute', right: '20px', top: '20px', display: 'flex', gap: '10px', zIndex: 10}}>
           <button className="logout-button" onClick={handleLogout} style={{
             padding: '8px 15px',
             backgroundColor: '#e6cc6f',
@@ -805,14 +821,15 @@ const ProfessionalArea = () => {
             gap: '5px',
             fontSize: '14px',
             fontWeight: '600',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.3s ease',
+            zIndex: 10
           }}>
             <LogOut size={16} /> Sair
           </button>
         </div>
         <div className="header-content">
           <h1><Crown size={24} style={{marginRight: '10px', display: 'inline-block', verticalAlign: 'middle'}} />Painel Profissional</h1>
-          <p className="header-subtitle">Naty Studio</p>
+          <p className="header-subtitle">BS Carvalho</p>
         </div>
       </header>
 
@@ -1349,7 +1366,7 @@ const ProfessionalArea = () => {
                 <div key={service.id} className="service-card">
                   <div className="service-card-header">
                     <div className="service-category-badge" data-category={service.category}>
-                      {service.category === 'cilios' ? '👁️' : '✨'} {service.category === 'cilios' ? 'Cílios' : 'Sobrancelhas'}
+                      {service.category === 'manicure' ? '💅' : '✨'} {service.category === 'manicure' ? 'Manicure' : 'Nail Art'}
                     </div>
                   </div>
                   
@@ -1843,8 +1860,8 @@ const ProfessionalArea = () => {
                 </div>
                 <div className="info-card">
                   <h4>📞 Contato</h4>
-                  <p>WhatsApp: (17) 98171-7922</p>
-                  <p>Instagram: @nathasha_beauty_studio</p>
+                  <p>WhatsApp: (17) 99979-1733</p>
+                  <p>Instagram: @bia_souzanails_</p>
                 </div>
               </div>
             </div>
@@ -2260,8 +2277,8 @@ const ProfessionalArea = () => {
                     onChange={(e) => setNewService({...newService, category: e.target.value})}
                     required
                   >
-                    <option value="cilios">👁️ Cílios</option>
-                    <option value="sobrancelhas">✨ Sobrancelhas</option>
+                    <option value="manicure">💅 Manicure</option>
+                    <option value="nailart">✨ Nail Art</option>
                   </select>
                 </div>
               </div>
@@ -2350,8 +2367,8 @@ const ProfessionalArea = () => {
                     onChange={(e) => setEditServiceData({...editServiceData, category: e.target.value})}
                     required
                   >
-                    <option value="cilios">👁️ Cílios</option>
-                    <option value="sobrancelhas">✨ Sobrancelhas</option>
+                    <option value="manicure">💅 Manicure</option>
+                    <option value="nailart">✨ Nail Art</option>
                   </select>
                 </div>
               </div>
@@ -2420,7 +2437,7 @@ const ProfessionalArea = () => {
             <div className="confirm-details">
               <div className="detail-item">
                 <span className="detail-label">Categoria:</span>
-                <span>{serviceToDelete.category === 'cilios' ? '👁️ Cílios' : '✨ Sobrancelhas'}</span>
+                <span>{serviceToDelete.category === 'manicure' ? '💅 Manicure' : '✨ Nail Art'}</span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Duração:</span>

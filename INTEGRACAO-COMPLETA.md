@@ -1,4 +1,4 @@
-# 📋 Resumo da Integração Supabase - Naty Studio
+# 📋 Resumo da Integração Supabase - Bia Souza Nails
 
 ## ✅ Integração Completa Realizada
 
@@ -330,6 +330,6 @@ O sistema está completamente funcional e pronto para uso em produção. Todos o
 
 ---
 
-**Desenvolvido para Naty Studio** 💅✨
+**Desenvolvido para Bia Souza Nails** 💅✨
 
 *Sistema de Agendamento com Backend Supabase*

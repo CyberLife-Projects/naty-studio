@@ -1,8 +1,8 @@
-# 📋 Documentação Completa - Sistema de Agendamento Naty Studio
+# 📋 Documentação Completa - Sistema de Agendamento Bia Souza Nails
 
 ## 🎯 Visão Geral
 
-Sistema completo de agendamento online para o Naty Studio, especializado em serviços de cílios e sobrancelhas. O sistema oferece duas interfaces distintas: **Área do Cliente** (para agendamentos) e **Área Administrativa** (para gerenciamento completo).
+Sistema completo de agendamento online para a Bia Souza Nails, especializado em serviços de manicure, pedicure e nail art. O sistema oferece duas interfaces distintas: **Área do Cliente** (para agendamentos) e **Área Administrativa** (para gerenciamento completo).
 
 ---
 
@@ -51,7 +51,7 @@ controle-pedido/
 
 #### Funcionalidades:
 - **Apresentação Visual Atraente**:
-  - Logo do Naty Studio com fonte Fortalesia Script
+  - Logo da Bia Souza Nails com fonte Fortalesia Script
   - Animações de fundo flutuantes (7 formas geométricas)
   - Ondas animadas na parte inferior
   - Ícone discreto de administrador no canto superior direito
@@ -165,7 +165,7 @@ controle-pedido/
 **Arquivo**: `ProfessionalArea.jsx`
 
 #### Sistema de Autenticação
-- **Senha de Acesso**: `naty123`
+- **Senha de Acesso**: `bia123`
 - **Tela de Login**:
   - Campo de senha com tipo password
   - Validação ao enviar formulário
@@ -471,7 +471,7 @@ controle-pedido/
 CREATE TABLE services (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
-  category TEXT NOT NULL CHECK (category IN ('cilios', 'sobrancelhas')),
+  category TEXT NOT NULL CHECK (category IN ('manicure', 'nailart')),
   duration INTEGER NOT NULL, -- em minutos
   price DECIMAL(10,2) NOT NULL,
   description TEXT,
@@ -652,7 +652,7 @@ CREATE TABLE appointments (
 - Mensagens amigáveis ao usuário
 
 ### Autenticação Admin
-- Senha simples (naty123)
+- Senha simples (bia123)
 - Estado de autenticação no componente
 - Proteção de rotas admin
 - Logout funcional
@@ -802,7 +802,7 @@ npm run preview  # Preview do build
 ## 📞 Contato e Suporte
 
 ### Informações do Sistema
-- **Nome**: Naty Studio - Sistema de Agendamento
+- **Nome**: Bia Souza Nails - Sistema de Agendamento
 - **Versão**: 1.0.0
 - **Última Atualização**: 30 de Novembro de 2025
 - **Desenvolvedor**: Documentação técnica completa
